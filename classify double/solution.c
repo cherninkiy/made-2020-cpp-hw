@@ -14,9 +14,36 @@ uint64_t convertToUint64 (double number) {
     return *((uint64_t *)(&number));
 }
 
-bool getBit (const uint64_t number, const uint8_t index) {
-    /// Your code here...
+double convertToDouble (uint64_t number) {
+    return *((double *)(&number));
 }
+
+bool getBit (const uint64_t number, const uint8_t index) {
+    return (number >> index) & 1 == 1;
+}
+
+uint64_t setBit (const uint64_t number, const uint8_t index) {
+    return number | (1ull << index);
+}
+
+bool checkSignBit(uint64_t number) {
+    return getBit(number, 63);
+}
+
+bool checkQuietBit(uint64_t number) {
+    return getBit(number, 51);
+}
+
+bool checkBitsAny(uint64_t number, uint64_t mask) {
+    return (number & mask) != 0ull;
+}
+
+bool checkBitsAll(uint64_t number, uint64_t mask) {
+    return (number & mask) == mask;
+}
+
+const uint64_t EXPONENT_BITS = 0x7FF0000000000000;
+const uint64_t FRACTION_BITS = 0x000FFFFFFFFFFFFF;
 
 
 /**
@@ -24,7 +51,7 @@ bool getBit (const uint64_t number, const uint8_t index) {
  */
 
 bool checkForPlusZero (uint64_t number) {
-    /// Your code here.
+    return number == 0ull;
 }
 
 bool checkForMinusZero (uint64_t number) {
@@ -32,35 +59,40 @@ bool checkForMinusZero (uint64_t number) {
 }
 
 bool checkForPlusInf (uint64_t number) {
-    /// Your code here.
+    return !checkSignBit(number) && checkBitsAll(number, EXPONENT_BITS)
+        && !checkBitsAny(number, FRACTION_BITS);
 }
 
 bool checkForMinusInf (uint64_t number) {
-    /// Your code here.
+    return checkSignBit(number) && checkBitsAll(number, EXPONENT_BITS)
+        && !checkBitsAny(number, FRACTION_BITS);
 }
 
 bool checkForPlusNormal (uint64_t number) {
-    /// Your code here.
+    return !checkSignBit(number) && checkBitsAny(number, EXPONENT_BITS) 
+        && !checkBitsAll(number, EXPONENT_BITS);
 }
 
 bool checkForMinusNormal (uint64_t number) {
-    /// Your code here.
+    return checkSignBit(number) && checkBitsAny(number, EXPONENT_BITS) 
+        && !checkBitsAll(number, EXPONENT_BITS);
 }
 
 bool checkForPlusDenormal (uint64_t number) {
-    /// Your code here.
+    return !checkSignBit(number) && !checkBitsAny(number, EXPONENT_BITS);
 }
 
 bool checkForMinusDenormal (uint64_t number) {
-    /// Your code here.
+    return checkSignBit(number) && !checkBitsAny(number, EXPONENT_BITS);
 }
 
 bool checkForSignalingNan (uint64_t number) {
-    /// Your code here.
+    return checkBitsAll(number, EXPONENT_BITS) && !checkQuietBit(number) 
+        && checkBitsAny(number, FRACTION_BITS);
 }
 
 bool checkForQuietNan (uint64_t number) {
-    /// Your code here.
+    return checkBitsAll(number, EXPONENT_BITS) && checkQuietBit(number);
 }
 
 
