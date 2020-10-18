@@ -3,7 +3,6 @@
 #include <vector>
 #include <iostream>
 
-
 namespace task {
 using namespace std;
 
@@ -13,103 +12,97 @@ class OutOfBoundsException : public exception {};
 class SizeMismatchException : public exception {};
 
 class Matrix {
-
-    class MatrixRow {
+  class MatrixRow {
     friend class Matrix;
-    private:
-        size_t size_;
-        double* data_;
 
-        void FillWithZeros(size_t size) {
-            size_ = size;
-            data_ = new double[size_];
-            for (size_t i = 0; i < size_; ++i) {
-                data_[i] = 0.0;
-            }            
-        }
+   private:
+    size_t size_;
+    double* data_;
 
-        void FillWithData(size_t size, const double* data) {
-            if (data_ != nullptr) {
-                delete [] data_;
-            }
-            size_ = size;
-            data_ = new double[size_];
-            for (size_t i = 0; i < size_; ++i) {
-                data_[i] = data[i];
-            }
-        }
+    void FillWithZeros(size_t size) {
+      size_ = size;
+      data_ = new double[size_];
+      for (size_t i = 0; i < size_; ++i) {
+        data_[i] = 0.0;
+      }
+    }
 
-        void Clear() {
-            if (data_ != nullptr) {
-                delete [] data_;
-            }
-            data_ = nullptr;
-        }
+    void FillWithData(size_t size, const double* data) {
+      if (data_ != nullptr) {
+        delete[] data_;
+      }
+      size_ = size;
+      data_ = new double[size_];
+      for (size_t i = 0; i < size_; ++i) {
+        data_[i] = data[i];
+      }
+    }
 
-    public:
-        MatrixRow() : size_(0), data_(nullptr) { }
+    void Clear() {
+      if (data_ != nullptr) {
+        delete[] data_;
+      }
+      data_ = nullptr;
+    }
 
-        ~MatrixRow() { }
+   public:
+    MatrixRow() : size_(0), data_(nullptr) {}
 
-        constexpr double& operator[] (size_t col) {
-            return data_[col];
-        }
+    ~MatrixRow() {}
 
-        constexpr const double& operator[] (size_t col) const {
-            return data_[col];
-        }
-    };
+    constexpr double& operator[](size_t col) { return data_[col]; }
 
-    size_t rows_ = 0;
-    size_t cols_ = 0;
-    MatrixRow* data_ = nullptr;
+    constexpr const double& operator[](size_t col) const { return data_[col]; }
+  };
 
-    void Assign(const Matrix& other);
-    void Clear();
+  size_t rows_ = 0;
+  size_t cols_ = 0;
+  MatrixRow* data_ = nullptr;
 
-public:
+  void Assign(const Matrix& other);
+  void Clear();
 
-    Matrix();
-    Matrix(size_t rows, size_t cols);
-    Matrix(const Matrix& copy);
-    Matrix& operator=(const Matrix& a);
-    ~Matrix();
+ public:
+  Matrix();
+  Matrix(size_t rows, size_t cols);
+  Matrix(const Matrix& copy);
+  Matrix& operator=(const Matrix& a);
+  ~Matrix();
 
-    constexpr size_t rows() const { return rows_; }
-    constexpr size_t cols() const { return cols_; }
+  constexpr size_t rows() const { return rows_; }
+  constexpr size_t cols() const { return cols_; }
 
-    double& get(size_t row, size_t col);
-    const double& get(size_t row, size_t col) const;
-    void set(size_t row, size_t col, const double& value);
-    void resize(size_t new_rows, size_t new_cols);
+  double& get(size_t row, size_t col);
+  const double& get(size_t row, size_t col) const;
+  void set(size_t row, size_t col, const double& value);
+  void resize(size_t new_rows, size_t new_cols);
 
-    MatrixRow& operator[](size_t row);
-    MatrixRow& operator[](size_t row) const;
+  MatrixRow& operator[](size_t row);
+  MatrixRow& operator[](size_t row) const;
 
-    Matrix& operator+=(const Matrix& a);
-    Matrix& operator-=(const Matrix& a);
-    Matrix& operator*=(const Matrix& a);
-    Matrix& operator*=(const double& number);
+  Matrix& operator+=(const Matrix& a);
+  Matrix& operator-=(const Matrix& a);
+  Matrix& operator*=(const Matrix& a);
+  Matrix& operator*=(const double& number);
 
-    Matrix operator+(const Matrix& a) const;
-    Matrix operator-(const Matrix& a) const;
-    Matrix operator*(const Matrix& a) const;
-    Matrix operator*(const double& a) const;
+  Matrix operator+(const Matrix& a) const;
+  Matrix operator-(const Matrix& a) const;
+  Matrix operator*(const Matrix& a) const;
+  Matrix operator*(const double& a) const;
 
-    Matrix operator-() const;
-    Matrix operator+() const;
+  Matrix operator-() const;
+  Matrix operator+() const;
 
+  double det() const;
+  void transpose();
+  Matrix transposed() const;
+  double trace() const;
 
-    double det() const;
-    void transpose();
-    Matrix transposed() const;
-    double trace() const;
+  std::vector<double> getRow(size_t row);
+  std::vector<double> getColumn(size_t column);
 
-    std::vector<double> getRow(size_t row);
-    std::vector<double> getColumn(size_t column);
-
-    bool operator==(const Matrix& a) const;
-    bool operator!=(const Matrix& a) const;
+  bool operator==(const Matrix& a) const;
+  bool operator!=(const Matrix& a) const;
 };
 
 Matrix operator*(const double& a, const Matrix& b);
