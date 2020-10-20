@@ -6,6 +6,7 @@
 #include <iostream>
 #include <algorithm>
 
+using namespace proj4;
 
 double distance(const Point& a, const Point& b) {
     return sqrt((a.x - b.x)*(a.x - b.x) + (a.y - b.y)*(a.y-b.y));
