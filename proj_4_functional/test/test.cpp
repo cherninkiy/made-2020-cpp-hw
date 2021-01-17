@@ -2,7 +2,7 @@
 #include <functional>
 #include <iostream>
 
-#include "src\function.h"
+#include "../src/function.h"
 
 using std::cout;
 using std::endl;
